@@ -44,7 +44,7 @@ class jarvis_code():
             self.speak("Good Evening,")
         self.speak("Hii Sir, I am jarvis, please tell how can i help you")
 
-    def desire(self, query):
+    def desire(self):
         while True:
             # opening the system apps
             # opening notebook
@@ -111,7 +111,6 @@ class jarvis_code():
             # opening google
             elif "open chrome" in query:
                 self.speak("what do you want to search on google sir")
-                print("saisir")
                 search = self.take_command().lower()
                 self.speak("opening google")
                 webbrowser.open(search)
@@ -131,19 +130,20 @@ class jarvis_code():
                 self.speak(
                     "Ok sir i am going to sleep,you can call me anytime")
                 break
+            elif "shutdown" in query:
+                self.speak("Thank you sir for using me,have a nice day")
+                sys.exit()
 
 
 jarvis = jarvis_code()
 # jarvis.speak("hello sir how can i help you")
 while True:
     query = jarvis.take_command()
-    if None == query :
+    if None == query:
         pass
     elif "wake up jarvis" in query:
         jarvis.wish()
-        query = jarvis.take_command()
-        jarvis.desire(query)
-    elif "shutdown" in query:
-        jarvis.speak("Thank you sir for using me,have a nice day")
-        sys.exit()
-#this is for testing
+        # query = jarvis.take_command()
+        jarvis.desire()
+
+# this is for testing
