@@ -53,15 +53,22 @@ class jarvis_code():
                 pass
             elif "open notepad" in query:
                 path = "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Accessories\\Notepad"
+                self.speak("opening notepad")
                 os.startfile(path)
+
             # openiong the google chrome
             elif "open google" in query:
                 path = "C:\\ProgramData\Microsoft\\Windows\\Start Menu\\Programs\\Google Chrome"
-                os.startfile(path)
-            # opening whatsapp
+                self.speak("what do you want to search on google sir")
+                search = self.take_command().lower()
+                self.speak("opening google")
+                webbrowser.open(search)
+
             # opening command prompt
             elif "open command prompt" in query:
+                self.speak("opening command prompt")
                 os.system("start cmd")
+
             # playing the music
             elif "play music" in query:
                 music_directory = "E:\\Music\\english"
@@ -70,6 +77,7 @@ class jarvis_code():
                 for song in songs:
                     if song.endswith(".mp3"):
                         os.startfile("E:\\Music\\english\\"+song)
+
             # getting ip address
             elif "ip address" in query:
                 ip = get("https://api.ipify.org").text
@@ -87,6 +95,7 @@ class jarvis_code():
                 print(results)
                 self.speak("according to wikipedia")
                 self.speak(results)
+
             # opening youtube
             elif "open youtube" in query:
                 self.speak("opening youtube")
@@ -108,13 +117,6 @@ class jarvis_code():
                 webbrowser.open(
                     "https://www.linkedin.com/feed/?trk=guest_homepage-basic_nav-header-signin")
 
-            # opening google
-            elif "open chrome" in query:
-                self.speak("what do you want to search on google sir")
-                search = self.take_command().lower()
-                self.speak("opening google")
-                webbrowser.open(search)
-
             # sending whatsapp message with jarvis
             elif "send whatsapp message" in query:
                 kit.sendwhatmsg("+918688136687",
@@ -126,13 +128,27 @@ class jarvis_code():
                 self.speak("playing songs on youtube")
                 kit.playonyt("never lie to me")
 
+            # making jarvis to go to sleep
             elif "go to sleep" in query:
                 self.speak(
                     "Ok sir i am going to sleep,you can call me anytime")
                 break
-            elif "shutdown" in query:
+
+            # terminating the programm execution
+            elif "stop" in query:
                 self.speak("Thank you sir for using me,have a nice day")
                 sys.exit()
+
+            # shutdowning the sysytem
+            elif "shutdown" in query:
+                self.speak("Got it Sir, shutdowning the Pc,")
+                self.speak("Thank you Sir,Have a nice day")
+                os.system("shutdown /s /t 5")
+
+            # restarting the computer
+            elif "restart" in query:
+                self.speak("Hang on Sir, restarting the Pc")
+                os.system("shutdown /r /t 5")
 
 
 jarvis = jarvis_code()
