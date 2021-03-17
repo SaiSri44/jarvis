@@ -9,6 +9,7 @@ import webbrowser
 import pywhatkit as kit
 import smtplib
 import sys
+import pyjokes
 
 engine = pyttsx3.init()
 voices = engine.getProperty("voices")
@@ -36,13 +37,18 @@ class jarvis_code():
 
     def wish(self):
         hour = int(datetime.datetime.now().hour)
+        minute = int(datetime.datetime.now().minute)
         if hour >= 0 and hour <= 12:
-            self.speak("Good morning ,")
+            self.speak(f"Good morning ,it's {hour} {minute} am")
+            print(f"Good morning ,it's {hour} : {minute} A.M")
         elif hour > 12 and hour <= 18:
-            self.speak("Good Afternoon,")
+            self.speak(f"Good Afternoon,it's {hour-12} {minute} pm")
+            print(f"Good afternoon ,it's {hour-12} : {minute} P.M") 
         else:
-            self.speak("Good Evening,")
+            self.speak(f"Good Evening,it's {hour-12}  {minute} pm") 
+            print(f"Good evening,it's {hour-12} : {minute} P.M") 
         self.speak("Hii Sir, I am jarvis, please tell how can i help you")
+          
 
     def desire(self):
         while True:
@@ -149,7 +155,11 @@ class jarvis_code():
             elif "restart" in query:
                 self.speak("Hang on Sir, restarting the Pc")
                 os.system("shutdown /r /t 5")
-
+            
+            #saying the jokes
+            elif "joke" in query :
+                joke = pyjokes.get_joke()
+                self.speak(joke)  
 
 jarvis = jarvis_code()
 # jarvis.speak("hello sir how can i help you")
