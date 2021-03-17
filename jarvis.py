@@ -10,6 +10,8 @@ import pywhatkit as kit
 import smtplib
 import sys
 import pyjokes
+import pyautogui
+import time
 
 engine = pyttsx3.init()
 voices = engine.getProperty("voices")
@@ -159,8 +161,40 @@ class jarvis_code():
             #saying the jokes
             elif "joke" in query :
                 joke = pyjokes.get_joke()
-                self.speak(joke)  
+                self.speak(joke) 
 
+            #finding the location
+            elif "where i am " in query or "location" in query :
+                try :
+                    ip = get("https://api.ipify.org").text
+                    print(ip)
+                    url = "https://get.geojs.io/vl/ip/geo/" + ip+".json"
+                    #url to get the location
+                    geo_requests = requests.get(url)
+                    geo_data = geo_requests.json()
+                    #it will give data in the form of dictonary
+                    city = geo_data['city'] 
+                    #it mnay throw error sometimws because there may be no state for some plcaes like delhi
+                    state = geo_data['state'] 
+                    country = geo_data['country']
+                    self.speak(f"Sir we are in {city} city in {state} state of {country}") 
+                except :
+                     self.speak("Sorry sir,due to poor internet i cannot find the location")
+                     #finding location takes more time ,so we added exception.
+                     pass 
+               
+                #taking the screenshot
+            elif "take screenshot" in query or "screenshot" in query :
+                    print("sir,please tell me the name of this screenshot file")
+                    self.speak("sir,please tell me the name of this screenshot file")
+                    name = self.take_command().lower()
+                    print("Hang on for few seconds sir , I am taking the screenshot")
+                    self.speak("Hang on for few seconds sir , I am taking the screenshot")
+                    time.sleep(3)
+                    img = pyautogui.screenshot()
+                    img.save(f"{name}.jpg")
+                    print("ok sir i am done with taking screenshot,it is saved in our current folder,i am ready for another command sir") 
+                    self.speak("ok sir i am done with taking screenshot, it is saved in our current folder, i am ready for another command sir")  
 jarvis = jarvis_code()
 # jarvis.speak("hello sir how can i help you")
 while True:
