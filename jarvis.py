@@ -146,3 +146,4 @@ while True:
     elif "shutdown" in query:
         jarvis.speak("Thank you sir for using me,have a nice day")
         sys.exit()
+#this is for testing
