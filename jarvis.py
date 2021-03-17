@@ -12,6 +12,7 @@ import sys
 import pyjokes
 import pyautogui
 import time
+import PyPDF2
 
 engine = pyttsx3.init()
 voices = engine.getProperty("voices")
@@ -194,7 +195,28 @@ class jarvis_code():
                     img = pyautogui.screenshot()
                     img.save(f"{name}.jpg")
                     print("ok sir i am done with taking screenshot,it is saved in our current folder,i am ready for another command sir") 
-                    self.speak("ok sir i am done with taking screenshot, it is saved in our current folder, i am ready for another command sir")  
+                    self.speak("ok sir i am done with taking screenshot, it is saved in our current folder, i am ready for another command sir") 
+
+            elif "read book" in query :
+                #note: book should be in this dorectory,or you can enter the location of book in open commmand 
+                book = open("TOM text.pdf",'rb') 
+                #opening the book in binary mode
+                pdfreader = PyPDF2.PdfFileReader(book)
+                #intilaising the reader,creating the object of the module
+                pages = pdfreader.numPages
+                #getting total no of pages
+                self.speak(f"This book consists of {pages} pages")
+                self.speak("sir,please say which page i should read")
+                self.speak("Enter the page number")
+                #getting the page no to which we should read
+                page_no = int(input("Enter the page no : ")) 
+                #getting the page
+                page = pdfreader.getPage(page_no)
+                #extracting the text from the page
+                text = page.extractText()
+                print(text) 
+                self.speak(text)
+
 jarvis = jarvis_code()
 # jarvis.speak("hello sir how can i help you")
 while True:
