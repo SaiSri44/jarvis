@@ -199,7 +199,7 @@ class jarvis_code():
 
             elif "read book" in query :
                 #note: book should be in this dorectory,or you can enter the location of book in open commmand 
-                book = open("TOM text.pdf",'rb') 
+                book = open("electrical textbook.pdf",'rb') 
                 #opening the book in binary mode
                 pdfreader = PyPDF2.PdfFileReader(book)
                 #intilaising the reader,creating the object of the module
@@ -210,6 +210,7 @@ class jarvis_code():
                 self.speak("Enter the page number")
                 #getting the page no to which we should read
                 page_no = int(input("Enter the page no : ")) 
+                print(page_no)
                 #getting the page
                 page = pdfreader.getPage(page_no)
                 #extracting the text from the page
