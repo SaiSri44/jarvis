@@ -13,6 +13,7 @@ import pyjokes
 import pyautogui
 import time
 import PyPDF2
+import pytube
 
 engine = pyttsx3.init()
 voices = engine.getProperty("voices")
@@ -218,13 +219,24 @@ class jarvis_code():
                 print(text) 
                 self.speak(text)
 
+             #downloading the youtube video   
+            elif "download youtube" or "download" in query :
+                self.speak("sir, please enter the youtube video url")
+                link = input("Enter the video url ")
+                video = pytube.YouTube(link) 
+                stream = video.streams.get_highest_resolution()
+                self.speak("hang on sir,video is downloading in current folder")  
+                stream.download()
+                self.speak("ok sir,youtube video is downloaded ,you may proceed further") 
+                
+
 jarvis = jarvis_code()
 # jarvis.speak("hello sir how can i help you")
 while True:
     query = jarvis.take_command()
     if None == query:
         pass
-    elif "wake up jarvis" in query:
+    elif "hello jarvis" in query:
         jarvis.wish()
         # query = jarvis.take_command()
         jarvis.desire()
