@@ -220,7 +220,7 @@ class jarvis_code():
                 self.speak(text)
 
              #downloading the youtube video   
-            elif "download youtube" or "download" in query :
+            elif "download youtube" in query or "download" in query :
                 self.speak("sir, please enter the youtube video url")
                 link = input("Enter the video url ")
                 video = pytube.YouTube(link) 
@@ -242,3 +242,8 @@ while True:
         jarvis.desire()
 
 # this is for testing
+
+
+
+
+
