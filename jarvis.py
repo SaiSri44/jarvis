@@ -20,7 +20,118 @@ voices = engine.getProperty("voices")
 engine.setProperty("voices", voices[1].id)
 
 
-class jarvis_code():
+class social_media():
+    def open_facebook(self):
+        webbrowser.open("https://www.facebook.com/")
+
+    def open_instagram(self):
+        webbrowser.open("https://www.instagram.com/")
+
+    def open_linkedin(self):
+        webbrowser.open(
+            "https://www.linkedin.com/feed/?trk=guest_homepage-basic_nav-header-signin")
+
+
+class system_apps():
+    def speak(self, audio):
+        engine.say(audio)
+        engine.runAndWait()
+
+    def open_notepad(self):
+        path = "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Accessories\\Notepad"
+        os.startfile(path)
+
+    def open_google(self):
+        path = "C:\\ProgramData\Microsoft\\Windows\\Start Menu\\Programs\\Google Chrome"
+        path = "C:\\ProgramData\Microsoft\\Windows\\Start Menu\\Programs\\Google Chrome"
+        self.speak("what do you want to search on google sir")
+        search = self.take_command().lower()
+        self.speak("opening google")
+        webbrowser.open(search)
+
+    def open_command_prompt(self):
+        self.speak("opening command prompt")
+        os.system("start cmd")
+
+
+class jarvis_abilites():
+    def speak(self, audio):
+        engine.say(audio)
+        engine.runAndWait()
+
+    def taking_screen_shot(self):
+        print("sir,please tell me the name of this screenshot file")
+        self.speak("sir,please tell me the name of this screenshot file")
+        name = self.take_command().lower()
+        print("Hang on for few seconds sir , I am taking the screenshot")
+        self.speak("Hang on for few seconds sir , I am taking the screenshot")
+        time.sleep(3)
+        img = pyautogui.screenshot()
+        img.save(f"{name}.jpg")
+        print("ok sir i am done with taking screenshot,it is saved in our current folder,i am ready for another command sir")
+        self.speak(
+            "ok sir i am done with taking screenshot, it is saved in our current folder, i am ready for another command sir")
+
+    def audio_book(self):
+        # note: book should be in this dorectory,or you can enter the location of book in open commmand 
+        book = open("electrical textbook.pdf",'rb') 
+        # opening the book in binary mode
+        pdfreader = PyPDF2.PdfFileReader(book)
+        # intilaising the reader,creating the object of the module
+        pages = pdfreader.numPages
+        # getting total no of pages
+        self.speak(f"This book consists of {pages} pages")
+        self.speak("sir,please say which page i should read")
+        self.speak("Enter the page number")
+        # getting the page no to which we should read
+        page_no = int(input("Enter the page no : ")) 
+        print(page_no)
+        # getting the page
+        page = pdfreader.getPage(page_no)
+        # extracting the text from the page
+        text = page.extractText()
+        print(text) 
+        self.speak(text) 
+
+    def find_location(self) :
+            try :
+                ip = get("https://api.ipify.org").text
+                print(ip)
+                url = "https://get.geojs.io/vl/ip/geo/" + ip+".json"
+                # url to get the location
+                geo_requests = requests.get(url)
+                geo_data = geo_requests.json()
+                # it will give data in the form of dictonary
+                city = geo_data['city'] 
+                # it mnay throw error sometimws because there may be no state for some plcaes like delhi
+                state = geo_data['state'] 
+                country = geo_data['country']
+                self.speak(f"Sir we are in {city} city in {state} state of {country}") 
+            except :
+                self.speak("Sorry sir,due to poor internet i cannot find the location")
+                # finding location takes more time ,so we added exception.
+                pass 
+
+    def youtube_video_download(self) :
+        self.speak("sir, please enter the youtube video url")
+        link = input("Enter the video url ")
+        video = pytube.YouTube(link) 
+        stream = video.streams.get_highest_resolution()
+        self.speak("hang on sir,video is downloading in current folder")  
+        stream.download()
+        self.speak("ok sir,youtube video is downloaded ,you may proceed further") 
+
+    def search_wikipedia(self,query) :
+        print("searching wikipedia.....")
+        self.speak("searching wikipedia")
+        query = query.replace("wikipedia", "")
+        results = wikipedia.summary(query, sentences=3)
+        print(results)
+        self.speak("according to wikipedia")
+        self.speak(results)
+           
+
+class jarvis_code(social_media,system_apps,jarvis_abilites):
 
     def speak(self, audio):
         engine.say(audio)
@@ -62,22 +173,16 @@ class jarvis_code():
             if query == None:
                 pass
             elif "open notepad" in query:
-                path = "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Accessories\\Notepad"
-                self.speak("opening notepad")
-                os.startfile(path)
+                 self.speak("opening notepad")
+                 self.open_notepad()
 
             # openiong the google chrome
             elif "open google" in query:
-                path = "C:\\ProgramData\Microsoft\\Windows\\Start Menu\\Programs\\Google Chrome"
-                self.speak("what do you want to search on google sir")
-                search = self.take_command().lower()
-                self.speak("opening google")
-                webbrowser.open(search)
+                self.open_google() 
 
             # opening command prompt
             elif "open command prompt" in query:
-                self.speak("opening command prompt")
-                os.system("start cmd")
+                self.open_command_prompt()
 
             # playing the music
             elif "play music" in query:
@@ -98,13 +203,7 @@ class jarvis_code():
 
             # searching for something in wikipedia
             elif "wikipedia" in query:
-                print("searching wikipedia.....")
-                self.speak("searching wikipedia")
-                query = query.replace("wikipedia", "")
-                results = wikipedia.summary(query, sentences=3)
-                print(results)
-                self.speak("according to wikipedia")
-                self.speak(results)
+                self.search_wikipedia(query)
 
             # opening youtube
             elif "open youtube" in query:
@@ -113,20 +212,19 @@ class jarvis_code():
 
             # opening facebook
             elif "open facebook" in query:
-                self.speak("opening facebook")
-                webbrowser.open("https://www.facebook.com/")
+                self.speak("opening facebook") 
+                self.open_facebook() 
 
             # opening instagrasm
             elif "open instagram" in query:
                 self.speak("opening instagram")
-                webbrowser.open("https://www.instagram.com/")
-
+                self.open_instagram()
+                
             # opening linkedin
             elif "open linkedin" in query:
                 self.speak("opening linkedin")
-                webbrowser.open(
-                    "https://www.linkedin.com/feed/?trk=guest_homepage-basic_nav-header-signin")
-
+                self.open_linkedin()
+                
             # sending whatsapp message with jarvis
             elif "send whatsapp message" in query:
                 kit.sendwhatmsg("+918688136687",
@@ -160,76 +258,27 @@ class jarvis_code():
                 self.speak("Hang on Sir, restarting the Pc")
                 os.system("shutdown /r /t 5")
             
-            #saying the jokes
+            # saying the jokes
             elif "joke" in query :
                 joke = pyjokes.get_joke()
                 self.speak(joke) 
 
-            #finding the location
+            # finding the location
             elif "where i am " in query or "location" in query :
-                try :
-                    ip = get("https://api.ipify.org").text
-                    print(ip)
-                    url = "https://get.geojs.io/vl/ip/geo/" + ip+".json"
-                    #url to get the location
-                    geo_requests = requests.get(url)
-                    geo_data = geo_requests.json()
-                    #it will give data in the form of dictonary
-                    city = geo_data['city'] 
-                    #it mnay throw error sometimws because there may be no state for some plcaes like delhi
-                    state = geo_data['state'] 
-                    country = geo_data['country']
-                    self.speak(f"Sir we are in {city} city in {state} state of {country}") 
-                except :
-                     self.speak("Sorry sir,due to poor internet i cannot find the location")
-                     #finding location takes more time ,so we added exception.
-                     pass 
-               
-                #taking the screenshot
+                 self.find_location()
+
+             # taking the screenshot
             elif "take screenshot" in query or "screenshot" in query :
-                    print("sir,please tell me the name of this screenshot file")
-                    self.speak("sir,please tell me the name of this screenshot file")
-                    name = self.take_command().lower()
-                    print("Hang on for few seconds sir , I am taking the screenshot")
-                    self.speak("Hang on for few seconds sir , I am taking the screenshot")
-                    time.sleep(3)
-                    img = pyautogui.screenshot()
-                    img.save(f"{name}.jpg")
-                    print("ok sir i am done with taking screenshot,it is saved in our current folder,i am ready for another command sir") 
-                    self.speak("ok sir i am done with taking screenshot, it is saved in our current folder, i am ready for another command sir") 
+                   self.taking_screen_shot()
 
+            #reading the pdf       
             elif "read book" in query :
-                #note: book should be in this dorectory,or you can enter the location of book in open commmand 
-                book = open("electrical textbook.pdf",'rb') 
-                #opening the book in binary mode
-                pdfreader = PyPDF2.PdfFileReader(book)
-                #intilaising the reader,creating the object of the module
-                pages = pdfreader.numPages
-                #getting total no of pages
-                self.speak(f"This book consists of {pages} pages")
-                self.speak("sir,please say which page i should read")
-                self.speak("Enter the page number")
-                #getting the page no to which we should read
-                page_no = int(input("Enter the page no : ")) 
-                print(page_no)
-                #getting the page
-                page = pdfreader.getPage(page_no)
-                #extracting the text from the page
-                text = page.extractText()
-                print(text) 
-                self.speak(text)
+                   self.audio_book()
 
-             #downloading the youtube video   
+             # downloading the youtube video   
             elif "download youtube" in query or "download" in query :
-                self.speak("sir, please enter the youtube video url")
-                link = input("Enter the video url ")
-                video = pytube.YouTube(link) 
-                stream = video.streams.get_highest_resolution()
-                self.speak("hang on sir,video is downloading in current folder")  
-                stream.download()
-                self.speak("ok sir,youtube video is downloaded ,you may proceed further") 
+                self.youtube_video_download() 
                 
-
 jarvis = jarvis_code()
 # jarvis.speak("hello sir how can i help you")
 while True:
