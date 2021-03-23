@@ -30,6 +30,8 @@ class social_media():
     def open_linkedin(self):
         webbrowser.open(
             "https://www.linkedin.com/feed/?trk=guest_homepage-basic_nav-header-signin")
+    def open_github(self) :
+        webbrowser.open("https://github.com/")        
 
 
 class system_apps():
@@ -182,7 +184,13 @@ class jarvis_code(social_media,system_apps,jarvis_abilites):
 
             # opening command prompt
             elif "open command prompt" in query:
+                self.speak("opening command prompt") 
                 self.open_command_prompt()
+
+            #opening the github
+            elif "open github" in query :
+                self.speak("opening the github") 
+                self.open_github()
 
             # playing the music
             elif "play music" in query:
