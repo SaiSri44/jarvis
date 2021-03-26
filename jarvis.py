@@ -6,7 +6,7 @@ import random
 from requests import get
 import wikipedia
 import webbrowser
-import pywhatkit as kit
+import requests
 import smtplib
 import sys
 import pyjokes
@@ -30,8 +30,9 @@ class social_media():
     def open_linkedin(self):
         webbrowser.open(
             "https://www.linkedin.com/feed/?trk=guest_homepage-basic_nav-header-signin")
-    def open_github(self) :
-        webbrowser.open("https://github.com/")        
+
+    def open_github(self):
+        webbrowser.open("https://github.com/")
 
 
 class system_apps():
@@ -44,7 +45,6 @@ class system_apps():
         os.startfile(path)
 
     def open_google(self):
-        path = "C:\\ProgramData\Microsoft\\Windows\\Start Menu\\Programs\\Google Chrome"
         path = "C:\\ProgramData\Microsoft\\Windows\\Start Menu\\Programs\\Google Chrome"
         self.speak("what do you want to search on google sir")
         search = self.take_command().lower()
@@ -75,8 +75,8 @@ class jarvis_abilites():
             "ok sir i am done with taking screenshot, it is saved in our current folder, i am ready for another command sir")
 
     def audio_book(self):
-        # note: book should be in this dorectory,or you can enter the location of book in open commmand 
-        book = open("electrical textbook.pdf",'rb') 
+        # note: book should be in this dorectory,or you can enter the location of book in open commmand
+        book = open("TOM.pdf", 'rb')
         # opening the book in binary mode
         pdfreader = PyPDF2.PdfFileReader(book)
         # intilaising the reader,creating the object of the module
@@ -86,44 +86,50 @@ class jarvis_abilites():
         self.speak("sir,please say which page i should read")
         self.speak("Enter the page number")
         # getting the page no to which we should read
-        page_no = int(input("Enter the page no : ")) 
+        page_no = int(input("Enter the page no : "))
         print(page_no)
         # getting the page
         page = pdfreader.getPage(page_no)
         # extracting the text from the page
         text = page.extractText()
-        print(text) 
-        self.speak(text) 
+        print(text)
+        self.speak(text)
 
-    def find_location(self) :
-            try :
-                ip = get("https://api.ipify.org").text
-                print(ip)
-                url = "https://get.geojs.io/vl/ip/geo/" + ip+".json"
-                # url to get the location
-                geo_requests = requests.get(url)
-                geo_data = geo_requests.json()
-                # it will give data in the form of dictonary
-                city = geo_data['city'] 
-                # it mnay throw error sometimws because there may be no state for some plcaes like delhi
-                state = geo_data['state'] 
-                country = geo_data['country']
-                self.speak(f"Sir we are in {city} city in {state} state of {country}") 
-            except :
-                self.speak("Sorry sir,due to poor internet i cannot find the location")
-                # finding location takes more time ,so we added exception.
-                pass 
+    def find_location(self):
+        try :
+            r = requests.get("https://get.geojs.io/") 
+            ip_request = requests.get("https://get.geojs.io/v1/ip.json") 
+            ip_address =  ip_request.json()['ip']
+            print(ip_address) 
+            url = "https://get.geojs.io/v1/ip/geo/" + ip_address + ".json"  
+            # # url to get the location
+            geo_requests = requests.get(url) 
+            geo_data = geo_requests.json()  
+            print(geo_data) 
+            # # it will give data in the form of dictonary
+            # # it mnay throw error sometimws because there may be no state for some plcaes like delhi
+            city = geo_data['city'] 
+            state = geo_data['region'] 
+            country = geo_data['country']
+            print(f"Sir we are in {city} city in {state} region of  {country}") 
+            speech = f"Sir we are in {city} city in {state} region of  {country}" 
+            self.speak(speech) 
+        except:
+            self.speak(
+                "Sorry sir,due to poor internet i cannot find the location")
+            # finding location takes more time ,so we added exception.
+            pass
 
-    def youtube_video_download(self) :
+    def youtube_video_download(self):
         self.speak("sir, please enter the youtube video url")
         link = input("Enter the video url ")
-        video = pytube.YouTube(link) 
+        video = pytube.YouTube(link)
         stream = video.streams.get_highest_resolution()
-        self.speak("hang on sir,video is downloading in current folder")  
+        self.speak("hang on sir,video is downloading in current folder")
         stream.download()
-        self.speak("ok sir,youtube video is downloaded ,you may proceed further") 
+        self.speak("ok sir,youtube video is downloaded ,you may proceed further")
 
-    def search_wikipedia(self,query) :
+    def search_wikipedia(self, query):
         print("searching wikipedia.....")
         self.speak("searching wikipedia")
         query = query.replace("wikipedia", "")
@@ -131,9 +137,9 @@ class jarvis_abilites():
         print(results)
         self.speak("according to wikipedia")
         self.speak(results)
-           
 
-class jarvis_code(social_media,system_apps,jarvis_abilites):
+
+class jarvis_code(social_media, system_apps, jarvis_abilites):
 
     def speak(self, audio):
         engine.say(audio)
@@ -148,6 +154,8 @@ class jarvis_code(social_media,system_apps,jarvis_abilites):
             print("Recognizing....")
             query = r.recognize_google(audio, language="en-in")
             print(query)
+        except sr.RequestError:
+            return "poor connection"
         except:
             return None
         return query.lower()
@@ -160,12 +168,11 @@ class jarvis_code(social_media,system_apps,jarvis_abilites):
             print(f"Good morning ,it's {hour} : {minute} A.M")
         elif hour > 12 and hour <= 18:
             self.speak(f"Good Afternoon,it's {hour-12} {minute} pm")
-            print(f"Good afternoon ,it's {hour-12} : {minute} P.M") 
+            print(f"Good afternoon ,it's {hour-12} : {minute} P.M")
         else:
-            self.speak(f"Good Evening,it's {hour-12}  {minute} pm") 
-            print(f"Good evening,it's {hour-12} : {minute} P.M") 
+            self.speak(f"Good Evening,it's {hour-12}  {minute} pm")
+            print(f"Good evening,it's {hour-12} : {minute} P.M")
         self.speak("Hii Sir, I am jarvis, please tell how can i help you")
-          
 
     def desire(self):
         while True:
@@ -175,21 +182,21 @@ class jarvis_code(social_media,system_apps,jarvis_abilites):
             if query == None:
                 pass
             elif "open notepad" in query:
-                 self.speak("opening notepad")
-                 self.open_notepad()
+                self.speak("opening notepad")
+                self.open_notepad()
 
             # openiong the google chrome
             elif "open google" in query:
-                self.open_google() 
+                self.open_google()
 
             # opening command prompt
             elif "open command prompt" in query:
-                self.speak("opening command prompt") 
+                self.speak("opening command prompt")
                 self.open_command_prompt()
 
-            #opening the github
-            elif "open github" in query :
-                self.speak("opening the github") 
+            # opening the github
+            elif "open github" in query:
+                self.speak("opening the github")
                 self.open_github()
 
             # playing the music
@@ -220,24 +227,18 @@ class jarvis_code(social_media,system_apps,jarvis_abilites):
 
             # opening facebook
             elif "open facebook" in query:
-                self.speak("opening facebook") 
-                self.open_facebook() 
+                self.speak("opening facebook")
+                self.open_facebook()
 
             # opening instagrasm
             elif "open instagram" in query:
                 self.speak("opening instagram")
                 self.open_instagram()
-                
+
             # opening linkedin
             elif "open linkedin" in query:
                 self.speak("opening linkedin")
                 self.open_linkedin()
-                
-            # sending whatsapp message with jarvis
-            elif "send whatsapp message" in query:
-                kit.sendwhatmsg("+918688136687",
-                                "this message is sent by jarvis", 6, 9)
-                self.speak("Whatsapp meassage sent succcesfullly")
 
             # playing song on youtube
             elif "play songs on youtube" in query:
@@ -265,33 +266,46 @@ class jarvis_code(social_media,system_apps,jarvis_abilites):
             elif "restart" in query:
                 self.speak("Hang on Sir, restarting the Pc")
                 os.system("shutdown /r /t 5")
-            
+
             # saying the jokes
-            elif "joke" in query :
+            elif "joke" in query:
                 joke = pyjokes.get_joke()
-                self.speak(joke) 
+                self.speak(joke)
 
             # finding the location
-            elif "where i am " in query or "location" in query :
-                 self.find_location()
+            elif "where i am " in query or "location" in query:
+                self.find_location()
 
-             # taking the screenshot
-            elif "take screenshot" in query or "screenshot" in query :
-                   self.taking_screen_shot()
+            # taking the screenshot
+            elif "take screenshot" in query or "screenshot" in query:
+                self.taking_screen_shot()
 
-            #reading the pdf       
-            elif "read book" in query :
-                   self.audio_book()
+            # reading the pdf
+            elif "read book" in query:
+                self.audio_book()
 
-             # downloading the youtube video   
-            elif "download youtube" in query or "download" in query :
-                self.youtube_video_download() 
-                
+            # downloading the youtube video
+            elif "download youtube" in query or "download" in query:
+                self.youtube_video_download()
+
+
 jarvis = jarvis_code()
 # jarvis.speak("hello sir how can i help you")
 while True:
     query = jarvis.take_command()
-    if None == query:
+    if "poor connection" == query:
+        jarvis.speak(
+            "Sir,due to poor internet connection , i am not able to follow your commands, please connect to internet sir")
+        jarvis.speak(
+            "sir,i will wait for 10 seconds, for you to connect to internet ")
+        time.sleep(10)
+        jarvis.speak("ok sir i am done,i hope your are connected to internet")
+        query = jarvis.take_command()
+        if "poor connection" == query:
+            jarvis.speak(
+                "sir, i think you don't have proper intenet connection, so i am going offline")
+            sys.exit()
+    elif None == query:
         pass
     elif "hello jarvis" in query:
         jarvis.wish()
@@ -299,8 +313,3 @@ while True:
         jarvis.desire()
 
 # this is for testing
-
-
-
-
-
