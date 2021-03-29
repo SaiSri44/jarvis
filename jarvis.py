@@ -352,7 +352,14 @@ class jarvis_code(social_media, system_apps, jarvis_abilites1, jarvis_abilites2)
             # getting battery percentage
             elif "how much power left" in query or "how much battery we have" in query:
                 self.battery_percentage()
-
+             
+             #raising the volume
+            elif "raise volume"  in query :
+                pyautogui.press("volumeup")
+            elif "decrease volume" in query :
+                pyautogui.press("volumedown") 
+            elif "mute volume" in query or "mute" in query : 
+                pyautogui.press("volumemute") 
 
 jarvis = jarvis_code()
 # jarvis.speak("hello sir how can i help you")
