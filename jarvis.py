@@ -14,6 +14,7 @@ import pyautogui
 import time
 import PyPDF2
 import pytube
+from bs4 import BeautifulSoup
 
 engine = pyttsx3.init()
 voices = engine.getProperty("voices")
@@ -95,25 +96,30 @@ class jarvis_abilites():
         print(text)
         self.speak(text)
 
-    def find_location(self):
-        try :
-            r = requests.get("https://get.geojs.io/") 
-            ip_request = requests.get("https://get.geojs.io/v1/ip.json") 
-            ip_address =  ip_request.json()['ip']
-            print(ip_address) 
-            url = "https://get.geojs.io/v1/ip/geo/" + ip_address + ".json"  
+    def find_location(self, shout=True):
+        try:
+            r = requests.get("https://get.geojs.io/")
+            ip_request = requests.get("https://get.geojs.io/v1/ip.json")
+            ip_address = ip_request.json()['ip']
+
+            url = "https://get.geojs.io/v1/ip/geo/" + ip_address + ".json"
             # # url to get the location
-            geo_requests = requests.get(url) 
-            geo_data = geo_requests.json()  
-            print(geo_data) 
+            geo_requests = requests.get(url)
+            geo_data = geo_requests.json()
+
             # # it will give data in the form of dictonary
             # # it mnay throw error sometimws because there may be no state for some plcaes like delhi
-            city = geo_data['city'] 
-            state = geo_data['region'] 
+            city = geo_data['city']
+            state = geo_data['region']
             country = geo_data['country']
-            print(f"Sir we are in {city} city in {state} region of  {country}") 
-            speech = f"Sir we are in {city} city in {state} region of  {country}" 
-            self.speak(speech) 
+            if shout:
+                print(ip_address)
+                print(geo_data)
+                print(
+                    f"Sir we are in {city} city in {state} region of  {country}")
+                speech = f"Sir we are in {city} city in {state} region of  {country}"
+                self.speak(speech)
+            return city
         except:
             self.speak(
                 "Sorry sir,due to poor internet i cannot find the location")
@@ -138,6 +144,19 @@ class jarvis_abilites():
         self.speak("according to wikipedia")
         self.speak(results)
 
+    def weather_forecast(self, talk=True):
+        place = self.find_location(shout=False)
+        weather = "temperature in " + place
+        url = f"https://www.google.com/search?q={weather}"
+        r = requests.get(url)
+        content = BeautifulSoup(r.text, "html.parser")
+        temperature = content.find("div", class_="BNeawe").text
+        if talk:
+            print(f"current {weather} is {temperature}")
+            self.speak(f"current {weather} is {temperature[:2]} degrees") 
+        else:
+            return temperature
+
 
 class jarvis_code(social_media, system_apps, jarvis_abilites):
 
@@ -149,7 +168,7 @@ class jarvis_code(social_media, system_apps, jarvis_abilites):
         r = sr.Recognizer()
         with sr.Microphone() as source:
             print("Listening....")
-            audio = r.listen(source, timeout=1, phrase_time_limit=5)
+            audio = r.listen(source, timeout=5, phrase_time_limit=5)
         try:
             print("Recognizing....")
             query = r.recognize_google(audio, language="en-in")
@@ -163,15 +182,22 @@ class jarvis_code(social_media, system_apps, jarvis_abilites):
     def wish(self):
         hour = int(datetime.datetime.now().hour)
         minute = int(datetime.datetime.now().minute)
+        temp = self.weather_forecast(talk=False)
         if hour >= 0 and hour <= 12:
-            self.speak(f"Good morning ,it's {hour} {minute} am")
-            print(f"Good morning ,it's {hour} : {minute} A.M")
+            self.speak(
+                f"Good morning , it's {hour} {minute}  a m , temperature outside is ,{temp[:2]} degrees ") 
+            print(
+                f"Good morning , it's {hour} : {minute} A.M. Temperature outside is ,{temp}")
         elif hour > 12 and hour <= 18:
-            self.speak(f"Good Afternoon,it's {hour-12} {minute} pm")
-            print(f"Good afternoon ,it's {hour-12} : {minute} P.M")
+            self.speak(
+                f"Good Afternoon , it's {hour-12}  {minute} p m , temperature outside is ,{temp[:2]} degrees")
+            print(
+                f"Good afternoon ,it's {hour-12} : {minute} P.M.Temperature outside is ,{temp} ")
         else:
-            self.speak(f"Good Evening,it's {hour-12}  {minute} pm")
-            print(f"Good evening,it's {hour-12} : {minute} P.M")
+            self.speak(
+                f"Good Evening , it's {hour-12}  {minute} p m , temperature outside is ,{temp[:2]} degrees") 
+            print(
+                f"Good evening,it's {hour-12} : {minute} P.M. Temperature outside is ,{temp}")
         self.speak("Hii Sir, I am jarvis, please tell how can i help you")
 
     def desire(self):
@@ -252,7 +278,7 @@ class jarvis_code(social_media, system_apps, jarvis_abilites):
                 break
 
             # terminating the programm execution
-            elif "stop" in query:
+            elif "go offline" in query:
                 self.speak("Thank you sir for using me,have a nice day")
                 sys.exit()
 
@@ -287,6 +313,9 @@ class jarvis_code(social_media, system_apps, jarvis_abilites):
             # downloading the youtube video
             elif "download youtube" in query or "download" in query:
                 self.youtube_video_download()
+
+            elif "temperature" in query:
+                self.weather_forecast()
 
 
 jarvis = jarvis_code()
