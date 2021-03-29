@@ -14,11 +14,15 @@ import pyautogui
 import time
 import PyPDF2
 import pytube
+import psutil
 from bs4 import BeautifulSoup
 
 engine = pyttsx3.init()
 voices = engine.getProperty("voices")
 engine.setProperty("voices", voices[1].id)
+# controlling the speech rate,this can be done by using one line 
+engine.setProperty('rate', 180)
+# normal values are between 180-200 if we decrease then it will speak slow and if increase it will speak fast 
 
 
 class social_media():
@@ -38,8 +42,10 @@ class social_media():
 
 class system_apps():
     def speak(self, audio):
+        print(audio)
         engine.say(audio)
         engine.runAndWait()
+        
 
     def open_notepad(self):
         path = "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Accessories\\Notepad"
@@ -57,21 +63,19 @@ class system_apps():
         os.system("start cmd")
 
 
-class jarvis_abilites():
+class jarvis_abilites1():
     def speak(self, audio):
+        print(audio)
         engine.say(audio)
         engine.runAndWait()
 
     def taking_screen_shot(self):
-        print("sir,please tell me the name of this screenshot file")
         self.speak("sir,please tell me the name of this screenshot file")
         name = self.take_command().lower()
-        print("Hang on for few seconds sir , I am taking the screenshot")
         self.speak("Hang on for few seconds sir , I am taking the screenshot")
         time.sleep(3)
         img = pyautogui.screenshot()
-        img.save(f"{name}.jpg")
-        print("ok sir i am done with taking screenshot,it is saved in our current folder,i am ready for another command sir")
+        img.save(f"{name}.jpg") 
         self.speak(
             "ok sir i am done with taking screenshot, it is saved in our current folder, i am ready for another command sir")
 
@@ -93,7 +97,6 @@ class jarvis_abilites():
         page = pdfreader.getPage(page_no)
         # extracting the text from the page
         text = page.extractText()
-        print(text)
         self.speak(text)
 
     def find_location(self, shout=True):
@@ -115,8 +118,6 @@ class jarvis_abilites():
             if shout:
                 print(ip_address)
                 print(geo_data)
-                print(
-                    f"Sir we are in {city} city in {state} region of  {country}")
                 speech = f"Sir we are in {city} city in {state} region of  {country}"
                 self.speak(speech)
             return city
@@ -140,7 +141,6 @@ class jarvis_abilites():
         self.speak("searching wikipedia")
         query = query.replace("wikipedia", "")
         results = wikipedia.summary(query, sentences=3)
-        print(results)
         self.speak("according to wikipedia")
         self.speak(results)
 
@@ -152,17 +152,42 @@ class jarvis_abilites():
         content = BeautifulSoup(r.text, "html.parser")
         temperature = content.find("div", class_="BNeawe").text
         if talk:
-            print(f"current {weather} is {temperature}")
             self.speak(f"current {weather} is {temperature[:2]} degrees") 
         else:
             return temperature
 
 
-class jarvis_code(social_media, system_apps, jarvis_abilites):
+class jarvis_abilites2() :
+        def speak(self, audio):
+            print(audio) 
+            engine.say(audio)
+            engine.runAndWait()
+            
+
+        def battery_percentage(self) :
+            battery = psutil.sensors_battery()
+            #this will provide all the info about our battery
+            percentage = battery.percent
+            # percent attribute gives the percentage
+            plugged = battery.power_plugged
+            # power_plugged will say whether adapter plugged in or not 
+            self.speak(f"sir , our battery percentage is {percentage} ")
+            if not plugged :
+                if percentage>=30 and percentage<=50 :
+                    self.speak(f"sir , our battery percentage is less than 50 percent, it is better to plug in the adapter") 
+                elif percentage>=20 and percentage<=30 :
+                    self.speak("sir , our battery is low , it is better to plug in , or switch on battery saver mode")
+                elif percentage < 20 :
+                    self.speak("sir , our batttery is very low ,immediately plug in the adapter") 
+
+
+class jarvis_code(social_media, system_apps, jarvis_abilites1,jarvis_abilites2):
 
     def speak(self, audio):
+        print(audio)
         engine.say(audio)
         engine.runAndWait()
+   
 
     def take_command(self):
         r = sr.Recognizer()
@@ -185,19 +210,13 @@ class jarvis_code(social_media, system_apps, jarvis_abilites):
         temp = self.weather_forecast(talk=False)
         if hour >= 0 and hour <= 12:
             self.speak(
-                f"Good morning , it's {hour} {minute}  a m , temperature outside is ,{temp[:2]} degrees ") 
-            print(
-                f"Good morning , it's {hour} : {minute} A.M. Temperature outside is ,{temp}")
+                f"Good morning , it's {hour} {minute}  a m , temperature outside is ,{temp[:2]} degrees") 
         elif hour > 12 and hour <= 18:
             self.speak(
                 f"Good Afternoon , it's {hour-12}  {minute} p m , temperature outside is ,{temp[:2]} degrees")
-            print(
-                f"Good afternoon ,it's {hour-12} : {minute} P.M.Temperature outside is ,{temp} ")
         else:
             self.speak(
                 f"Good Evening , it's {hour-12}  {minute} p m , temperature outside is ,{temp[:2]} degrees") 
-            print(
-                f"Good evening,it's {hour-12} : {minute} P.M. Temperature outside is ,{temp}")
         self.speak("Hii Sir, I am jarvis, please tell how can i help you")
 
     def desire(self):
@@ -237,7 +256,6 @@ class jarvis_code(social_media, system_apps, jarvis_abilites):
             # getting ip address
             elif "ip address" in query:
                 ip = get("https://api.ipify.org").text
-                print(ip)
                 self.speak(f"sir your ip address is {ip}")
 
             # performing the online tasks
@@ -314,9 +332,13 @@ class jarvis_code(social_media, system_apps, jarvis_abilites):
             elif "download youtube" in query or "download" in query:
                 self.youtube_video_download()
 
+            #weather inforamtion
             elif "temperature" in query:
                 self.weather_forecast()
 
+            #getting battery percentage
+            elif "how much power left" or "how much battery we have" in query :
+                self.battery_percentage() 
 
 jarvis = jarvis_code()
 # jarvis.speak("hello sir how can i help you")
