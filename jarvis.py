@@ -19,7 +19,18 @@ from bs4 import BeautifulSoup
 
 engine = pyttsx3.init()
 voices = engine.getProperty("voices")
-engine.setProperty("voices", voices[1].id)
+engine.setProperty("voice", voices[1].id) 
+# there are bascially two types of voices in our system,they are david(male) and zira(female) 
+# int the above code voices is a list objcet,it contains the voices, by looping through the list we can hear the voices.
+# # for voice in voices :
+#     print(voice.id)
+#     engine.setProperty("voice", voice.id) 
+#     engine.say("hello sir i am your jarvis") 
+#     engine.runAndWait()
+# 
+# Above code gives the voices, voices[0] is david,and voices[1] is zara,we can switch between the voices by changing the indexes  
+#we can install more voices in our in systema also, david and zara come by dafault 
+
 # controlling the speech rate,this can be done by using one line 
 engine.setProperty('rate', 180)
 # normal values are between 180-200 if we decrease then it will speak slow and if increase it will speak fast 
@@ -337,7 +348,7 @@ class jarvis_code(social_media, system_apps, jarvis_abilites1,jarvis_abilites2):
                 self.weather_forecast()
 
             #getting battery percentage
-            elif "how much power left" or "how much battery we have" in query :
+            elif "how much power left" in query or "how much battery we have" in query :
                 self.battery_percentage() 
 
 jarvis = jarvis_code()
