@@ -19,21 +19,23 @@ from bs4 import BeautifulSoup
 
 engine = pyttsx3.init()
 voices = engine.getProperty("voices")
-engine.setProperty("voice", voices[1].id) 
-# there are bascially two types of voices in our system,they are david(male) and zira(female) 
+engine.setProperty("voice", voices[3].id)
+# there are bascially two types of voices in our system,they are david(male) and zira(female)
 # int the above code voices is a list objcet,it contains the voices, by looping through the list we can hear the voices.
 # # for voice in voices :
 #     print(voice.id)
-#     engine.setProperty("voice", voice.id) 
-#     engine.say("hello sir i am your jarvis") 
+#     engine.setProperty("voice", voice.id)
+#     engine.say("hello sir i am your jarvis")
 #     engine.runAndWait()
-# 
-# Above code gives the voices, voices[0] is david,and voices[1] is zara,we can switch between the voices by changing the indexes  
-#we can install more voices in our in systema also, david and zara come by dafault 
-
-# controlling the speech rate,this can be done by using one line 
+#
+# Above code gives the voices, voices[0] is david,and voices[1] is zara,we can switch between the voices by changing the indexes
+# we can install more voices in our in systema also, david and zara come by dafault
+#i had added the mark voice and david Mvoices  extra to the system 
+#now the voice[0] is david voice[1] is mark and voice[2] is davidM and voices[3] is zira 
+ 
+# controlling the speech rate,this can be done by using one line
 engine.setProperty('rate', 180)
-# normal values are between 180-200 if we decrease then it will speak slow and if increase it will speak fast 
+# normal values are between 180-200 if we decrease then it will speak slow and if increase it will speak fast
 
 
 class social_media():
@@ -56,7 +58,6 @@ class system_apps():
         print(audio)
         engine.say(audio)
         engine.runAndWait()
-        
 
     def open_notepad(self):
         path = "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Accessories\\Notepad"
@@ -86,7 +87,7 @@ class jarvis_abilites1():
         self.speak("Hang on for few seconds sir , I am taking the screenshot")
         time.sleep(3)
         img = pyautogui.screenshot()
-        img.save(f"{name}.jpg") 
+        img.save(f"{name}.jpg")
         self.speak(
             "ok sir i am done with taking screenshot, it is saved in our current folder, i am ready for another command sir")
 
@@ -163,42 +164,43 @@ class jarvis_abilites1():
         content = BeautifulSoup(r.text, "html.parser")
         temperature = content.find("div", class_="BNeawe").text
         if talk:
-            self.speak(f"current {weather} is {temperature[:2]} degrees") 
+            self.speak(f"current {weather} is {temperature[:2]} degrees")
         else:
             return temperature
 
 
-class jarvis_abilites2() :
-        def speak(self, audio):
-            print(audio) 
-            engine.say(audio)
-            engine.runAndWait()
-            
+class jarvis_abilites2():
+    def speak(self, audio):
+        print(audio)
+        engine.say(audio)
+        engine.runAndWait()
 
-        def battery_percentage(self) :
-            battery = psutil.sensors_battery()
-            #this will provide all the info about our battery
-            percentage = battery.percent
-            # percent attribute gives the percentage
-            plugged = battery.power_plugged
-            # power_plugged will say whether adapter plugged in or not 
-            self.speak(f"sir , our battery percentage is {percentage} ")
-            if not plugged :
-                if percentage>=30 and percentage<=50 :
-                    self.speak(f"sir , our battery percentage is less than 50 percent, it is better to plug in the adapter") 
-                elif percentage>=20 and percentage<=30 :
-                    self.speak("sir , our battery is low , it is better to plug in , or switch on battery saver mode")
-                elif percentage < 20 :
-                    self.speak("sir , our batttery is very low ,immediately plug in the adapter") 
+    def battery_percentage(self):
+        battery = psutil.sensors_battery()
+        # this will provide all the info about our battery
+        percentage = battery.percent
+        # percent attribute gives the percentage
+        plugged = battery.power_plugged
+        # power_plugged will say whether adapter plugged in or not
+        self.speak(f"sir , our battery percentage is {percentage} ")
+        if not plugged:
+            if percentage >= 30 and percentage <= 50:
+                self.speak(
+                    f"sir , our battery percentage is less than 50 percent, it is better to plug in the adapter")
+            elif percentage >= 20 and percentage <= 30:
+                self.speak(
+                    "sir , our battery is low , it is better to plug in , or switch on battery saver mode")
+            elif percentage < 20:
+                self.speak(
+                    "sir , our batttery is very low ,immediately plug in the adapter")
 
 
-class jarvis_code(social_media, system_apps, jarvis_abilites1,jarvis_abilites2):
+class jarvis_code(social_media, system_apps, jarvis_abilites1, jarvis_abilites2):
 
     def speak(self, audio):
         print(audio)
         engine.say(audio)
         engine.runAndWait()
-   
 
     def take_command(self):
         r = sr.Recognizer()
@@ -221,13 +223,13 @@ class jarvis_code(social_media, system_apps, jarvis_abilites1,jarvis_abilites2):
         temp = self.weather_forecast(talk=False)
         if hour >= 0 and hour <= 12:
             self.speak(
-                f"Good morning , it's {hour} {minute}  a m , temperature outside is ,{temp[:2]} degrees") 
+                f"Good morning , it's {hour} {minute}  a m , temperature outside is ,{temp[:2]} degrees")
         elif hour > 12 and hour <= 18:
             self.speak(
                 f"Good Afternoon , it's {hour-12}  {minute} p m , temperature outside is ,{temp[:2]} degrees")
         else:
             self.speak(
-                f"Good Evening , it's {hour-12}  {minute} p m , temperature outside is ,{temp[:2]} degrees") 
+                f"Good Evening , it's {hour-12}  {minute} p m , temperature outside is ,{temp[:2]} degrees")
         self.speak("Hii Sir, I am jarvis, please tell how can i help you")
 
     def desire(self):
@@ -343,13 +345,14 @@ class jarvis_code(social_media, system_apps, jarvis_abilites1,jarvis_abilites2):
             elif "download youtube" in query or "download" in query:
                 self.youtube_video_download()
 
-            #weather inforamtion
+            # weather inforamtion
             elif "temperature" in query:
                 self.weather_forecast()
 
-            #getting battery percentage
-            elif "how much power left" in query or "how much battery we have" in query :
-                self.battery_percentage() 
+            # getting battery percentage
+            elif "how much power left" in query or "how much battery we have" in query:
+                self.battery_percentage()
+
 
 jarvis = jarvis_code()
 # jarvis.speak("hello sir how can i help you")
