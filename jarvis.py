@@ -253,19 +253,17 @@ class jarvis_code(social_media, system_apps, jarvis_abilites1, jarvis_abilites2)
         temp = self.weather_forecast(talk=False)
         if hour >= 0 and hour <= 12:
             self.speak(
-                f"Good morning , it's {hour} {minute}  a m , temperature outside is ,{temp[:2]} degrees")
+                f"Good morning , it's {hour} : {minute}  a m , temperature outside is ,{temp[:2]} degrees")
         elif hour > 12 and hour <= 18:
             self.speak(
-                f"Good Afternoon , it's {hour-12}  {minute} p m , temperature outside is ,{temp[:2]} degrees")
+                f"Good Afternoon , it's {hour-12} : {minute} p m , temperature outside is ,{temp[:2]} degrees")
         else:
             self.speak(
-                f"Good Evening , it's {hour-12}  {minute} p m , temperature outside is ,{temp[:2]} degrees")
-        self.speak("Hii Sir, I am jarvis, please tell how can i help you")
+                f"Good Evening , it's {hour-12} : {minute} p m , temperature outside is ,{temp[:2]} degrees")
+        self.speak("Hii Sir, I am jarvis, please tell how can i help you") 
 
     def desire(self,reminder_time,reminder_text,alarm_time):
         while True:
-            # opening the system apps
-            # opening notebook
             query = self.take_command()
             self.remind(reminder_time,reminder_text) 
             self.alarm(alarm_time)
@@ -302,8 +300,6 @@ class jarvis_code(social_media, system_apps, jarvis_abilites1, jarvis_abilites2)
             elif "ip address" in query:
                 ip = get("https://api.ipify.org").text
                 self.speak(f"sir your ip address is {ip}")
-
-            # performing the online tasks
 
             # searching for something in wikipedia
             elif "wikipedia" in query:
@@ -386,19 +382,25 @@ class jarvis_code(social_media, system_apps, jarvis_abilites1, jarvis_abilites2)
                 self.battery_percentage()
 
              # raising the volume
+            
+            #raising the volume
             elif "raise volume" in query:
                 pyautogui.press("volumeup")
+            
+            #decreasing the volume
             elif "decrease volume" in query:
                 pyautogui.press("volumedown")
+            
+            #muting the volume    
             elif "mute volume" in query or "mute" in query:
                 pyautogui.press("volumemute")
-
+            
+            #setting the alarm
             elif "set alarm" in query or "alarm" in query :
                 self.speak("sir , please enter the time for setting alarm " )
                 alarm_time = input("Enter the time : ")
                 self.speak("sir , alarm set successfully ")
             
-
             # searching for anything in the youtube
             elif "search in youtube" in query or "youtube search" in query:
                 self.speak("what do you wanna search in youtube sir")
@@ -408,7 +410,7 @@ class jarvis_code(social_media, system_apps, jarvis_abilites1, jarvis_abilites2)
                 webbrowser.open(url)
                 self.speak("sir , here is what i found in youtube")
 
-              #closing the notepad  
+            #closing the notepad  
             elif "close notepad" in query:
                 self.speak("closing notepad") 
                 self.close_notepad()
@@ -422,7 +424,8 @@ class jarvis_code(social_media, system_apps, jarvis_abilites1, jarvis_abilites2)
             elif  "close command prompt" in query :
                 self.speak("closing the command prompt")    
                 self.close_command_prompt() 
-
+            
+            #reminder
             elif "remind me" in query :
                 self.speak("sir , tell me what i should remind you") 
                 reminder_text = self.take_command() 
@@ -430,15 +433,23 @@ class jarvis_code(social_media, system_apps, jarvis_abilites1, jarvis_abilites2)
                 time = input("Enter the time : ") 
                 self.speak("ok sir i will remind you at specified time")
                 reminder_time = time 
+            
+            #repaeating the words
             elif "repeat my words" in query :
                 self.speak("sir , i am listening speak now ")        
                 spoken_sentence = self.take_command()
                 self.speak(f"sir , you have spoken these ,  {spoken_sentence}")  
             
+           #viewing the reminders
+            elif "what are my reminders" in query or "reminders" in query :
+               if reminder_text!=None :
+                   self.speak(f"sir , you have the reminder {reminder_text} at the time {reminder_time}")
+               else :
+                   self.speak("sir , you don't have any reminders ")
 
 
 jarvis = jarvis_code()
-# jarvis.speak("hello sir how can i help you")
+# jarvis.speak("hello sir how can i help you") 
 while True:
     query = jarvis.take_command()
     if "poor connection" == query:
