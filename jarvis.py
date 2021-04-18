@@ -18,6 +18,7 @@ import psutil
 from bs4 import BeautifulSoup
 import keyboard
 from plyer import notification
+import Quickstart
 
 engine = pyttsx3.init()
 voices = engine.getProperty("voices")
@@ -446,6 +447,11 @@ class jarvis_code(social_media, system_apps, jarvis_abilites1, jarvis_abilites2)
                    self.speak(f"sir , you have the reminder {reminder_text} at the time {reminder_time}")
                else :
                    self.speak("sir , you don't have any reminders ")
+           #getting the calendar events
+            elif "events" in query :
+                text = query
+                service = Quickstart.authenticate_google()
+                Quickstart.get_events(Quickstart.get_date(text),service)  
 
 
 jarvis = jarvis_code()
@@ -471,4 +477,4 @@ while True:
         # query = jarvis.take_command()
         jarvis.desire(None,None,None)
 
-# this is for testing
+# this is for testing 
