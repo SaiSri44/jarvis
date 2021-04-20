@@ -72,9 +72,12 @@ class system_apps():
     def open_google(self):
         path = "C:\\ProgramData\Microsoft\\Windows\\Start Menu\\Programs\\Google Chrome"
         self.speak("what do you want to search on google sir")
-        search = self.take_command().lower()
-        self.speak("opening google")
-        webbrowser.open(search)
+        search = self.take_command()
+        if search == None :
+            self.speak("sir , you did mention anything to search") 
+        else :    
+             self.speak("opening google")
+             webbrowser.open(search) 
 
     def close_chrome(self) :
         os.system("TASKKILL /f /im chrome.exe")    
