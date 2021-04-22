@@ -226,7 +226,16 @@ class jarvis_abilites2():
         if alarm_time == curent_time :  
             os.startfile("C:\\Users\\angaj\\OneDrive\\Desktop\\VSCode\\python\\jarvis\\jarvis wake up alarm.mp3")
             time.sleep(30) 
-  
+     
+    def play_music(self) :
+        music_directory = "E:\\Music\\common"
+        songs = os.listdir(music_directory)
+        random.shuffle(songs) 
+        for song in songs:
+            if song.endswith(".mp3"):
+                   os.startfile("E:\\Music\\common\\"+song) 
+                   break
+                        
 
 
 class jarvis_code(social_media, system_apps, jarvis_abilites1, jarvis_abilites2):
@@ -293,12 +302,7 @@ class jarvis_code(social_media, system_apps, jarvis_abilites1, jarvis_abilites2)
 
             # playing the music
             elif "play music" in query:
-                music_directory = "E:\\Music\\english"
-                songs = os.listdir(music_directory)
-                random.shuffle(songs)
-                for song in songs:
-                    if song.endswith(".mp3"):
-                        os.startfile("E:\\Music\\english\\"+song)
+                self.play_music() 
 
             # getting ip address
             elif "ip address" in query:
