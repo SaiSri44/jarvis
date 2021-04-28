@@ -18,11 +18,11 @@ import psutil
 from bs4 import BeautifulSoup
 import keyboard
 from plyer import notification
-import Quickstart
+import Quickstart 
 
 engine = pyttsx3.init()
 voices = engine.getProperty("voices")
-engine.setProperty("voice", voices[3].id)
+engine.setProperty("voice", voices[5].id) 
 # there are bascially two types of voices in our system,they are david(male) and zira(female)
 # int the above code voices is a list objcet,it contains the voices, by looping through the list we can hear the voices.
 # # for voice in voices :
@@ -249,12 +249,16 @@ class jarvis_code(social_media, system_apps, jarvis_abilites1, jarvis_abilites2)
         r = sr.Recognizer()
         with sr.Microphone() as source:
             print("Listening....")
-            audio = r.listen(source, timeout=5, phrase_time_limit=5)
+            try : 
+              audio = r.listen(source, timeout=10, phrase_time_limit=5)
+            except :
+               pass   
         try:
             print("Recognizing....")
             query = r.recognize_google(audio, language="en-in")
             print(query)
         except sr.RequestError:
+            print("Could not request the results from the google speech recognition service.... ") 
             return "poor connection"
         except:
             return None
@@ -263,7 +267,7 @@ class jarvis_code(social_media, system_apps, jarvis_abilites1, jarvis_abilites2)
     def wish(self):
         hour = int(datetime.datetime.now().hour)
         minute = int(datetime.datetime.now().minute)
-        temp = self.weather_forecast(talk=False)
+        temp = self.weather_forecast(talk=False) 
         if hour >= 0 and hour <= 12:
             self.speak(
                 f"Good morning , it's {hour} : {minute}  a m , temperature outside is ,{temp[:2]} degrees")
