@@ -22,7 +22,7 @@ import Quickstart
 
 engine = pyttsx3.init()
 voices = engine.getProperty("voices")
-engine.setProperty("voice", voices[5].id) 
+engine.setProperty("voice", voices[8].id) 
 # there are bascially two types of voices in our system,they are david(male) and zira(female)
 # int the above code voices is a list objcet,it contains the voices, by looping through the list we can hear the voices.
 # # for voice in voices :
@@ -69,7 +69,7 @@ class system_apps():
     def close_notepad(self):
         os.system("TASKKILL /f /im notepad.exe") 
 
-    def open_google(self):
+    def open_google(self): 
         path = "C:\\ProgramData\Microsoft\\Windows\\Start Menu\\Programs\\Google Chrome"
         self.speak("what do you want to search on google sir")
         search = self.take_command()
@@ -150,7 +150,7 @@ class jarvis_abilites1():
             self.speak(
                 "Sorry sir,due to poor internet i cannot find the location")
             # finding location takes more time ,so we added exception.
-            pass
+            pass 
 
     def youtube_video_download(self):
         self.speak("sir, please enter the youtube video url")
@@ -179,7 +179,7 @@ class jarvis_abilites1():
         if talk:
             self.speak(f"current {weather} is {temperature[:2]} degrees")
         else:
-            return temperature
+            return temperature 
     
 
 class jarvis_abilites2():
@@ -339,7 +339,7 @@ class jarvis_code(social_media, system_apps, jarvis_abilites1, jarvis_abilites2)
 
             # playing song on youtube
             elif "play songs on youtube" in query:
-                self.speak("playing songs on youtube")
+                self.speak("playing songs on youtube") 
                 kit.playonyt("never lie to me")
 
             # making jarvis to go to sleep
